@@ -26,12 +26,13 @@ def clean_data(df):
     df = df[~df.duplicated(keep = 'first')]
     df = df[df.related != 2]
     df = df.drop('child_alone', axis = 1)
-
+    return df
 
 def save_data(df, database_filename):
-    engine = create_engine(database_filename)
+    database_URL = 'sqlite:///{}'.format(database_filename)
+    engine = create_engine(database_URL)
     df.to_sql('Categorized_Tweets', engine, index=False, if_exists="replace")
-
+    engine.dispose()
 
 def main():
     if len(sys.argv) == 4:
