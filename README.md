@@ -15,21 +15,21 @@
 3. The model predicts categories that show up frequently in the training dataset much better than it predicts rare categories.
 
 # Files
-- app
+- app folder
 	 - template
-		- master.html  # main page of web app
-		- go.html  # classification result page of web app
-		- run.py  # Flask file that runs app
+		1. master.html  # main page of web app
+		2. go.html  # classification result page of web app
+		3. run.py  # Flask file that runs app
 
-- data
-	- disaster_categories.csv  # tweet category data to process 
-	- disaster_messages.csv  # tweet text data to process
-	- process_data.py
-	- DisasterResponse.db   # database to save clean data to
+- data folder
+	1. disaster_categories.csv  # tweet category data to process 
+	2. disaster_messages.csv  # tweet text data to process
+	3. process_data.py  # preps data for ML pipeline
+	4. DisasterResponse.db   # database to save clean data to
 
-- models
-	- train_classifier.py
-	- classifier.pkl  # saved model 
+- models folder
+	1. train_classifier.py  # implements ML pipeline
+	2. classifier.pkl  # saved model 
 
 - README.md
 
