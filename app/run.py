@@ -61,6 +61,8 @@ def index():
     
     category_counts = df.drop(['id','message','original', 'genre'], axis = 1).sum(axis = 1, numeric_only = True, skipna = True)
     
+    category_frequency = df.drop(['id','message','original', 'genre'], axis = 1).sum(axis = 0, numeric_only = True, skipna = True).sort_values(ascending = False)
+    
     graphs = [
         {
             'data': [
@@ -73,7 +75,7 @@ def index():
             'layout': {
                 'title': 'Distribution of Message Genres',
                 'yaxis': {
-                    'title': "Count"
+                    'title': "Tweet Count"
                 },
                 'xaxis': {
                     'title': "Genre"
@@ -95,6 +97,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Number of Categories Matched"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    y=category_frequency,
+                    x=category_frequency.index
+                )
+            ],
+
+            'layout': {
+                'title': 'Message Category Counts',
+                'yaxis': {
+                    'title': "Tweet Count"
+                },
+                'xaxis': {
+                    'title': "Category"
                 }
             }
         }
