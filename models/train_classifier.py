@@ -1,7 +1,6 @@
 import sys
 import nltk
 nltk.download(['punkt', 'wordnet'])
-
 import re
 import numpy as np
 import pandas as pd
@@ -53,25 +52,38 @@ def build_model():
     LSVCpipeline = Pipeline([
                 ('vect', CountVectorizer(tokenizer = tokenize)),
                 ('tfidf', TfidfTransformer()),
-                ('clf', OneVsRestClassifier(LinearSVC(), n_jobs=1))
+                ('clf', OneVsRestClassifier(LinearSVC()))
     ])
-    return LSVCpipeline
+    
+    parameters = {
+        'clf__estimator__loss': ('hinge', 'squared_hinge'),
+        #'clf__estimator__dual': (True, False)
+        #'clf__estimator__C': (.01, .1, 1, 10, 100, 1000)
+        #'tfidf__norm': ('l1', 'l2', None),
+        #'tfidf__use_idf': (True, False),
+        #'tfidf__smooth_idf': (True, False)
+        #'tfidf__sublinear_tf': (True, False)
+        
+    }
+    
+    cv = GridSearchCV(LSVCpipeline, param_grid=parameters, error_score=0)
+    
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     Y_pred = pd.DataFrame(Y_pred, index = Y_test.index, columns = category_names)
     print(classification_report(Y_test, Y_pred, target_names= category_names))
+    
+    #classification = classification_report(Y_test, Y_pred, target_names= category_names, output_dict = True)
+    #with open('models/classification_report.pkl', 'wb') as f:
+    #    pickle.dump(classification, f, pickle.HIGHEST_PROTOCOL)
 
 def save_model(model, model_filepath):
-    
-    data = {
-        'model': model
-    }
 
     with open(model_filepath, 'wb') as f:
-        # Pickle the 'data' dictionary using the highest protocol available.
-        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(model, f, pickle.HIGHEST_PROTOCOL)
 
 
 def main():
@@ -86,6 +98,7 @@ def main():
         
         print('Training model...')
         model.fit(X_train, Y_train)
+        print("\nBest Parameters:", model.best_params_)
         
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
