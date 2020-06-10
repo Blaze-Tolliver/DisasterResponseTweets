@@ -15,6 +15,15 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    """Function to tokenize, lemmatize, and case normalize a tweet.
+
+    Args:
+        text (str): tweet text.
+    Returns:
+        clean_tokens(list): list of cleaned tokens from the tweet.
+
+    """
+    
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -37,7 +46,14 @@ model = joblib.load("../models/classifier.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
-    
+    """Function to create plotly graphs, encode them in JSON, and render them to master.html using Flask.
+
+    Args:
+        None.
+    Returns:
+        render_template(object): Passes the graphs to the master.html page.
+
+    """
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
@@ -45,11 +61,6 @@ def index():
     
     category_counts = df.drop(['id','message','original', 'genre'], axis = 1).sum(axis = 1, numeric_only = True, skipna = True)
     
-    
-    
-    
-    # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -100,6 +111,16 @@ def index():
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    """Function to take user query and run the classification model to predict the categorie(s)
+    that the query matches.
+
+    Args:
+        None.
+    Returns:
+        render_template(object): Passes the classification results and query text to 'go.html' page.
+
+    """
+    
     # save user input in query
     query = request.args.get('query', '') 
 
@@ -116,6 +137,14 @@ def go():
 
 
 def main():
+    """Function to run the Flask app.
+
+    Args:
+        None.
+    Returns:
+        None.
+
+    """
     app.run(host='0.0.0.0', port=3001, debug=True)
 
 
